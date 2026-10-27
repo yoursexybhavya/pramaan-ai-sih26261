@@ -8,3 +8,4 @@ pramaan-app/runtime/*
 !pramaan-app/uploads/.gitkeep
 !pramaan-app/runtime/.gitkeep
 .DS_Store
+.opencode/

@@ -55,6 +55,10 @@ def seed() -> None:
             app_id = cur.lastrowid
             for doc in docs:
                 metadata = doc.get("metadata", {})
+                if story == "amber" and doc["kind"] == "fire certificate":
+                    metadata.update({"ela_block_ratio": 2.72, "forgery_risk": 0.82, "heatmap": "synthetic-splice"})
+                if story == "red" and doc["kind"] == "approval":
+                    metadata.update({"ela_block_ratio": 2.81, "forgery_risk": 0.84, "heatmap": "synthetic-splice"})
                 db.execute("INSERT INTO documents(application_id,name,kind,filename,path,metadata_json) VALUES(?,?,?,?,?,?)",
                            (app_id, doc["name"], doc.get("kind", "other"), doc.get("filename"), None, json.dumps(metadata)))
             for flag in report["flags"]:
@@ -71,4 +75,3 @@ def seed() -> None:
 if __name__ == "__main__":
     seed()
     print("Seed completed successfully.")
-

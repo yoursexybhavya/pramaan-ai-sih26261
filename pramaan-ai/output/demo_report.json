@@ -27,7 +27,7 @@
       "code": "ELA-SUSPECT",
       "severity": "HIGH",
       "engine": "PROVE",
-      "message": "Forgery risk 0.35; inspect heatmap"
+      "message": "Forgery risk 0.82; inspect heatmap"
     },
     {
       "code": "HISTORY-JUMP",
@@ -67,7 +67,7 @@
     },
     "tampered": {
       "block_ratio": 1.04,
-      "risk": 0.35
+      "risk": 0.82
     }
   },
   "audit": [
@@ -77,64 +77,64 @@
         "application": "synthetic-eoa-0044"
       },
       "previous_hash": "GENESIS",
-      "created_at": "2026-10-27T03:55:52Z",
-      "hash": "089cde42140387366449e8e93895e1337dbbf827d8cbf48dd0edc4e84a4331d3"
+      "created_at": "2026-10-27T04:07:19Z",
+      "hash": "ec26802991a3d6c5db7267d2d91c2f0315e158eb721e1dcfbf5479bc6b4c204d"
     },
     {
       "action": "PARSE",
       "detail": {
         "application": "synthetic-eoa-0044"
       },
-      "previous_hash": "089cde42140387366449e8e93895e1337dbbf827d8cbf48dd0edc4e84a4331d3",
-      "created_at": "2026-10-27T03:55:52Z",
-      "hash": "d06a28255e1ea1a69ce1a8724d0776e78c3d4a40eef57aa99bf355b4d3aa408c"
+      "previous_hash": "ec26802991a3d6c5db7267d2d91c2f0315e158eb721e1dcfbf5479bc6b4c204d",
+      "created_at": "2026-10-27T04:07:19Z",
+      "hash": "cad564eb1ce070de5681f7545d3bc1b7ae1adaab5c44fb6a4e295c3148eedf43"
     },
     {
       "action": "PROVE",
       "detail": {
         "application": "synthetic-eoa-0044"
       },
-      "previous_hash": "d06a28255e1ea1a69ce1a8724d0776e78c3d4a40eef57aa99bf355b4d3aa408c",
-      "created_at": "2026-10-27T03:55:52Z",
-      "hash": "5dabe72b5aa1b9c4c3f8f8fa89a823a759b1c1c392c63539ce73d0b9a2bea2d7"
+      "previous_hash": "cad564eb1ce070de5681f7545d3bc1b7ae1adaab5c44fb6a4e295c3148eedf43",
+      "created_at": "2026-10-27T04:07:19Z",
+      "hash": "2c35a835954a413775690572baee28c7c162732b2bb3be1f4969849c8f9c9de5"
     },
     {
       "action": "MATCH",
       "detail": {
         "application": "synthetic-eoa-0044"
       },
-      "previous_hash": "5dabe72b5aa1b9c4c3f8f8fa89a823a759b1c1c392c63539ce73d0b9a2bea2d7",
-      "created_at": "2026-10-27T03:55:52Z",
-      "hash": "f15e02d10a0dc543c095ce7e18147f1f1d7a8645beea9d85fc3abed8d5a3f625"
+      "previous_hash": "2c35a835954a413775690572baee28c7c162732b2bb3be1f4969849c8f9c9de5",
+      "created_at": "2026-10-27T04:07:19Z",
+      "hash": "5006c639fe3a88b82db23b1e3b74418054524c109bc01af3e56a918d0d70430f"
     },
     {
       "action": "VERIFY",
       "detail": {
         "application": "synthetic-eoa-0044"
       },
-      "previous_hash": "f15e02d10a0dc543c095ce7e18147f1f1d7a8645beea9d85fc3abed8d5a3f625",
-      "created_at": "2026-10-27T03:55:52Z",
-      "hash": "d19beb005091515af89ab304f16c63074daab6a11b6bf704d869b9de17e46515"
+      "previous_hash": "5006c639fe3a88b82db23b1e3b74418054524c109bc01af3e56a918d0d70430f",
+      "created_at": "2026-10-27T04:07:19Z",
+      "hash": "6993a612875ee3818bc9a5f73469368a023f2effcb6c4b413c701d241f71f1b2"
     },
     {
       "action": "SEE",
       "detail": {
         "application": "synthetic-eoa-0044"
       },
-      "previous_hash": "d19beb005091515af89ab304f16c63074daab6a11b6bf704d869b9de17e46515",
-      "created_at": "2026-10-27T03:55:52Z",
-      "hash": "39aa4cc47c7f6ecf01ca59d8ab285d75a0575c0e3dc686c30fb502f9489cfcc5"
+      "previous_hash": "6993a612875ee3818bc9a5f73469368a023f2effcb6c4b413c701d241f71f1b2",
+      "created_at": "2026-10-27T04:07:19Z",
+      "hash": "47eda6511e79a22dda9414130f7835ebbe82ac3031b3754a32ab05d72ab3bdc5"
     },
     {
       "action": "SCORE",
       "detail": {
         "application": "synthetic-eoa-0044"
       },
-      "previous_hash": "39aa4cc47c7f6ecf01ca59d8ab285d75a0575c0e3dc686c30fb502f9489cfcc5",
-      "created_at": "2026-10-27T03:55:52Z",
-      "hash": "05d0330791ed8ee801bdc28ebadff91295c2c540117274f5328eab7340780584"
+      "previous_hash": "47eda6511e79a22dda9414130f7835ebbe82ac3031b3754a32ab05d72ab3bdc5",
+      "created_at": "2026-10-27T04:07:19Z",
+      "hash": "a21441c621492e432ea29fcb1b175000568e3d3e674b1788301d741bed6099ba"
     }
   ],
   "audit_valid": true,
-  "generated_at": "2026-10-27T03:55:52Z"
+  "generated_at": "2026-10-27T04:07:19Z"
 }

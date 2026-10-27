@@ -17,7 +17,7 @@ from . import engines, seed, store
 app = FastAPI(title="PRAMAAN-AI", version="0.1.0", description="Evidence-linked AICTE application validation MVP")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 STATIC = Path(__file__).parent / "static"
-UPLOADS = Path(__file__).resolve().parents[1] / "uploads"
+UPLOADS = Path(os.getenv("PRAMAAN_UPLOADS", "/tmp/pramaan-uploads" if os.getenv("VERCEL") else str(Path(__file__).resolve().parents[1] / "uploads")))
 UPLOADS.mkdir(parents=True, exist_ok=True)
 TOKENS: Dict[str, str] = {}
 
@@ -181,7 +181,7 @@ def resolve_flag(application_id: int, flag_id: int, payload: Dict[str, str], use
 @app.post("/api/applications/{application_id}/decide")
 def decide(application_id: int, payload: Dict[str, str], user: Dict[str, str] = Depends(require("Senior Official"))) -> Dict[str, Any]:
     decision = payload.get("decision", "")
-    valid_decisions = ("Approve", "Reject", "Return for cure", "Refer to Ground EVC Inspection")
+    valid_decisions = ("Approve", "Reject", "Return for cure", "Return for Cure", "Refer to Ground EVC Inspection", "Refer to Priority EVC Ground Inspection")
     if decision not in valid_decisions:
         raise HTTPException(400, f"Decision must be one of: {', '.join(valid_decisions)}")
     if decision != "Approve" and not payload.get("reason", "").strip():

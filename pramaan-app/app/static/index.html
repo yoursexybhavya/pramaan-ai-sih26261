@@ -1154,7 +1154,7 @@
               { id: 'external', name: 'VERIFY', full: 'External Truth', weight: '20%' },
               { id: 'plausibility', name: 'SEE', full: 'Infrastructure', weight: '15%' }
             ].map(p => {
-              const val = pillars[p.id] ?? 80;
+              const val = pillars[p.id] ?? (p.id === 'plausibility' ? pillars.infrastructure : undefined) ?? 80;
               const cls = val < 50 ? 'low' : val < 75 ? 'mid' : '';
               return `
                 <div class="pillar-card">

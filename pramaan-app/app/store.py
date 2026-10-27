@@ -11,7 +11,8 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, Optional
 
 ROOT = Path(__file__).resolve().parents[1]
-DB_PATH = Path(os.getenv("PRAMAAN_DB", str(ROOT / "runtime" / "pramaan.sqlite3")))
+DEFAULT_DB = "/tmp/pramaan.sqlite3" if os.getenv("VERCEL") else str(ROOT / "runtime" / "pramaan.sqlite3")
+DB_PATH = Path(os.getenv("PRAMAAN_DB", DEFAULT_DB))
 
 
 def utc_now() -> str:

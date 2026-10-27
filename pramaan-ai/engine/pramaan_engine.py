@@ -40,7 +40,7 @@ def ela(image: Image.Image, quality: int = 75) -> Tuple[float, float, Image.Imag
             block = diff.crop((left, top, min(left + 32, original.width), min(top + 32, original.height)))
             blocks.append(sum(ImageStat.Stat(block).mean) / 3)
     suspicious = sum(value > 4.5 for value in blocks) / max(1, len(blocks))
-    risk = max(0.0, min(0.99, (suspicious - 0.01) / 0.07))
+    risk = max(0.0, min(0.99, (suspicious - 0.01) / 0.03))
     heat = diff.point(lambda px: min(255, px * 8))
     return round(1 + mean / 12, 2), round(risk, 2), heat
 
