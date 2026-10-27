@@ -9,3 +9,4 @@ pramaan-app/runtime/*
 !pramaan-app/runtime/.gitkeep
 .DS_Store
 .opencode/
+.vercel
