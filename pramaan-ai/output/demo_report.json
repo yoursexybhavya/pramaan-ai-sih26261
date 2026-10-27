@@ -1,0 +1,140 @@
+{
+  "application": "synthetic-eoa-0044",
+  "score": 52,
+  "band": "AMBER",
+  "hard_gate": "unresolved HIGH-severity flag",
+  "pillars": {
+    "completeness": 62,
+    "authenticity": 17,
+    "consistency": 72,
+    "external": 48,
+    "infrastructure": 76
+  },
+  "flags": [
+    {
+      "code": "MISSING-FIRE",
+      "severity": "HIGH",
+      "engine": "PARSE",
+      "message": "Fire certificate checklist cell is unresolved"
+    },
+    {
+      "code": "EXPIRED-AFFIDAVIT",
+      "severity": "MEDIUM",
+      "engine": "PARSE",
+      "message": "Affidavit age exceeds 180-day rule"
+    },
+    {
+      "code": "ELA-SUSPECT",
+      "severity": "HIGH",
+      "engine": "PROVE",
+      "message": "Forgery risk 0.35; inspect heatmap"
+    },
+    {
+      "code": "HISTORY-JUMP",
+      "severity": "MEDIUM",
+      "engine": "MATCH",
+      "message": "Land area changed +23% without support"
+    },
+    {
+      "code": "GHOST-FACULTY",
+      "severity": "HIGH",
+      "engine": "MATCH",
+      "message": "Salted faculty key FAC-HASH-2044 repeats"
+    },
+    {
+      "code": "DSC-INVALID",
+      "severity": "HIGH",
+      "engine": "VERIFY",
+      "message": "Two certificate signatures need issuer confirmation"
+    },
+    {
+      "code": "GPS-OUTLIER",
+      "severity": "MEDIUM",
+      "engine": "SEE",
+      "message": "One photo is outside the campus geofence"
+    },
+    {
+      "code": "PHOTO-REUSE",
+      "severity": "HIGH",
+      "engine": "SEE",
+      "message": "Perceptual hash matches a later submission"
+    }
+  ],
+  "forensics": {
+    "clean": {
+      "block_ratio": 1.03,
+      "risk": 0.0
+    },
+    "tampered": {
+      "block_ratio": 1.04,
+      "risk": 0.35
+    }
+  },
+  "audit": [
+    {
+      "action": "INGEST",
+      "detail": {
+        "application": "synthetic-eoa-0044"
+      },
+      "previous_hash": "GENESIS",
+      "created_at": "2026-10-27T03:55:52Z",
+      "hash": "089cde42140387366449e8e93895e1337dbbf827d8cbf48dd0edc4e84a4331d3"
+    },
+    {
+      "action": "PARSE",
+      "detail": {
+        "application": "synthetic-eoa-0044"
+      },
+      "previous_hash": "089cde42140387366449e8e93895e1337dbbf827d8cbf48dd0edc4e84a4331d3",
+      "created_at": "2026-10-27T03:55:52Z",
+      "hash": "d06a28255e1ea1a69ce1a8724d0776e78c3d4a40eef57aa99bf355b4d3aa408c"
+    },
+    {
+      "action": "PROVE",
+      "detail": {
+        "application": "synthetic-eoa-0044"
+      },
+      "previous_hash": "d06a28255e1ea1a69ce1a8724d0776e78c3d4a40eef57aa99bf355b4d3aa408c",
+      "created_at": "2026-10-27T03:55:52Z",
+      "hash": "5dabe72b5aa1b9c4c3f8f8fa89a823a759b1c1c392c63539ce73d0b9a2bea2d7"
+    },
+    {
+      "action": "MATCH",
+      "detail": {
+        "application": "synthetic-eoa-0044"
+      },
+      "previous_hash": "5dabe72b5aa1b9c4c3f8f8fa89a823a759b1c1c392c63539ce73d0b9a2bea2d7",
+      "created_at": "2026-10-27T03:55:52Z",
+      "hash": "f15e02d10a0dc543c095ce7e18147f1f1d7a8645beea9d85fc3abed8d5a3f625"
+    },
+    {
+      "action": "VERIFY",
+      "detail": {
+        "application": "synthetic-eoa-0044"
+      },
+      "previous_hash": "f15e02d10a0dc543c095ce7e18147f1f1d7a8645beea9d85fc3abed8d5a3f625",
+      "created_at": "2026-10-27T03:55:52Z",
+      "hash": "d19beb005091515af89ab304f16c63074daab6a11b6bf704d869b9de17e46515"
+    },
+    {
+      "action": "SEE",
+      "detail": {
+        "application": "synthetic-eoa-0044"
+      },
+      "previous_hash": "d19beb005091515af89ab304f16c63074daab6a11b6bf704d869b9de17e46515",
+      "created_at": "2026-10-27T03:55:52Z",
+      "hash": "39aa4cc47c7f6ecf01ca59d8ab285d75a0575c0e3dc686c30fb502f9489cfcc5"
+    },
+    {
+      "action": "SCORE",
+      "detail": {
+        "application": "synthetic-eoa-0044"
+      },
+      "previous_hash": "39aa4cc47c7f6ecf01ca59d8ab285d75a0575c0e3dc686c30fb502f9489cfcc5",
+      "created_at": "2026-10-27T03:55:52Z",
+      "hash": "05d0330791ed8ee801bdc28ebadff91295c2c540117274f5328eab7340780584"
+    }
+  ],
+  "audit_valid": true,
+  "generated_at": "2026-10-27T03:55:52Z"
+}

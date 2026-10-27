@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.venv/
+*.db
+*.sqlite3
+pramaan-app/uploads/*
+pramaan-app/runtime/*
+!pramaan-app/uploads/.gitkeep
+!pramaan-app/runtime/.gitkeep
+.DS_Store
