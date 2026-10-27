@@ -789,6 +789,10 @@
           <h1 id="viewTitle" class="page-title">Triage Queue</h1>
         </div>
         <div class="top-actions">
+          <div id="aiStatusPill" class="advisory-badge" style="background:#e8f7f0; border-color:#b8e6d2; color:#107e54;">
+            <span>🤖</span>
+            <span id="aiStatusText">AI Engine: Active</span>
+          </div>
           <div class="advisory-badge">
             <span>⚖️</span>
             <span>AI is Advisory Only · Final Approval Stays With Human Official</span>
@@ -878,6 +882,10 @@
         $('#appShell').classList.remove('hidden');
         $('#userName').textContent = state.user.display_name;
         $('#userRole').textContent = state.user.role;
+        try {
+          const aiStat = await api('/api/ai/status');
+          $('#aiStatusText').textContent = `AI Engine: ${aiStat.provider || 'Active'} (${aiStat.model || 'Autonomous'})`;
+        } catch (_) {}
         renderView();
       } catch (err) {
         logout();
