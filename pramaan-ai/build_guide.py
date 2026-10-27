@@ -52,6 +52,7 @@ SECTIONS = [
         "If Ollama is stopped or slow, the request falls back to deterministic rules. A model outage never changes a compliance result.",
     ]),
     ("7 · Hosted AI and official integrations", [
+        "Recommended hosted choices: Groq’s free developer access for fast open-weight models; OpenRouter’s openrouter/free router for zero-cost, rate-limited model routing; or Cerebras’ time-limited trial credits. Availability and quotas change, so verify the provider’s current terms.",
         "Create credentials only in the provider’s official console. Store them in Vercel Environment Variables or a secret manager; use separate Development, Preview and Production values.",
         "DigiLocker/API Setu is not an open anonymous API. It requires partner registration, consent and issued credentials such as client ID, client secret or product instance ID depending on the integration path.",
         "Use official sandbox credentials and signed receipts. A copied document uploaded to DigiLocker must not be treated as issuer-authenticated merely because it is hosted there.",
