@@ -965,6 +965,7 @@
         api('/api/stats'),
         api('/api/applications')
       ]);
+      const aiStatus = await api('/api/ai/status');
       state.stats = stats;
       state.apps = apps;
 
@@ -1005,6 +1006,11 @@
             Confirmed mandatory issuer failure caps score at <code>40</code> (RED). No black boxes.
           </div>
           <button class="outline sm" onclick="openApp(state.apps[0]?.id)">Inspect Top File &rarr;</button>
+        </div>
+        <div style="background:${aiStatus.available ? '#eaf8f1' : '#f7fafc'}; border:1px solid ${aiStatus.available ? '#b8e6d2' : 'var(--line)'}; border-radius:8px; padding:10px 18px; margin-bottom:20px; font-size:12px;">
+          <strong>Optional AI assist:</strong> ${esc(aiStatus.provider)} · ${esc(aiStatus.model)} ·
+          <span style="color:${aiStatus.available ? 'var(--green)' : 'var(--muted)'}; font-weight:700;">${aiStatus.available ? 'AVAILABLE' : 'RULES-ONLY FALLBACK'}</span>
+          <span class="muted"> · advisory suggestions never change score, gates, or human decisions</span>
         </div>
 
         <!-- TRIAGE TABLE -->

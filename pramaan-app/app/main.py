@@ -16,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import engines, seed, store
+from . import ai, engines, seed, store
 
 app = FastAPI(title="PRAMAAN-AI", version="0.1.0", description="Evidence-linked AICTE application validation MVP")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
@@ -122,6 +122,11 @@ def me(user: Dict[str, str] = Depends(current_user)) -> Dict[str, Any]:
     return user
 
 
+@app.get("/api/ai/status")
+def ai_status(user: Dict[str, str] = Depends(current_user)) -> Dict[str, Any]:
+    return ai.status()
+
+
 @app.get("/api/stats")
 def stats(user: Dict[str, str] = Depends(current_user)) -> Dict[str, Any]:
     counts = {row["band"]: row["n"] for row in store.rows("SELECT band,COUNT(*) n FROM applications GROUP BY band")}
@@ -164,6 +169,7 @@ async def create_application(
     if not documents:
         raise HTTPException(400, "Upload at least one document")
     report = engines.build_report(documents, {"source_verified": False})
+    report["ai_assist"] = {"provider": ai.status(), "suggested_claims": ai.suggest_claims("\n".join(d.get("text", "") for d in documents)), "advisory_only": True}
     with store.connect() as db:
         cur = db.execute("INSERT INTO applications(institution_name,app_type,cycle,score,band,report_json,created_at) VALUES(?,?,?,?,?,?,?)",
                          (institution_name, app_type, cycle, report["score"], report["band"], json.dumps(report), store.utc_now()))
