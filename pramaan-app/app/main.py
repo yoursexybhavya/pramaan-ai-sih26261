@@ -2,8 +2,12 @@
 from __future__ import annotations
 
 import json
+import base64
+import hashlib
+import hmac
 import os
 import secrets
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -20,6 +24,28 @@ STATIC = Path(__file__).parent / "static"
 UPLOADS = Path(os.getenv("PRAMAAN_UPLOADS", "/tmp/pramaan-uploads" if os.getenv("VERCEL") else str(Path(__file__).resolve().parents[1] / "uploads")))
 UPLOADS.mkdir(parents=True, exist_ok=True)
 TOKENS: Dict[str, str] = {}
+TOKEN_SECRET = os.getenv("PRAMAAN_SECRET", "pramaan-ai-demo-secret-change-in-production").encode()
+
+
+def issue_token(username: str) -> str:
+    payload = base64.urlsafe_b64encode(json.dumps({"u": username, "exp": int(time.time()) + 86400}, separators=(",", ":")).encode()).decode().rstrip("=")
+    signature = hmac.new(TOKEN_SECRET, payload.encode(), hashlib.sha256).hexdigest()
+    return f"{payload}.{signature}"
+
+
+def token_user(token: str) -> Optional[str]:
+    try:
+        payload, signature = token.split(".", 1)
+        expected = hmac.new(TOKEN_SECRET, payload.encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(signature, expected):
+            return None
+        padded = payload + "=" * (-len(payload) % 4)
+        data = json.loads(base64.urlsafe_b64decode(padded).decode())
+        if int(data.get("exp", 0)) < int(time.time()):
+            return None
+        return str(data["u"])
+    except (ValueError, KeyError, TypeError, json.JSONDecodeError, UnicodeDecodeError):
+        return None
 
 
 @app.on_event("startup")
@@ -30,7 +56,8 @@ def startup() -> None:
 def current_user(authorization: Optional[str] = Header(default=None)) -> Dict[str, str]:
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(401, "Login required")
-    username = TOKENS.get(authorization.split(" ", 1)[1])
+    token = authorization.split(" ", 1)[1]
+    username = token_user(token) or TOKENS.get(token)
     if not username:
         raise HTTPException(401, "Invalid or expired token")
     row = store.one("SELECT username,display_name,role FROM users WHERE username=?", (username,))
@@ -86,7 +113,7 @@ def login(payload: Dict[str, str]) -> Dict[str, Any]:
     import hashlib
     if not row or hashlib.sha256(password.encode()).hexdigest() != row["password_hash"]:
         raise HTTPException(401, "Invalid demo credentials")
-    token = secrets.token_urlsafe(24); TOKENS[token] = username
+    token = issue_token(username); TOKENS[token] = username
     return {"token": token, "user": {"username": row["username"], "display_name": row["display_name"], "role": row["role"]}}
 
 
