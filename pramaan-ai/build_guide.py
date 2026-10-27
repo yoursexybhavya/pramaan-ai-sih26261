@@ -41,7 +41,7 @@ SECTIONS = [
         "There are no legitimate ‘open-source API keys’ to copy from the internet. Public keys are usually stolen, revoked, rate-limited or unsafe to use. Never put a key in JavaScript, Git, a PDF, or a screenshot.",
         "The default is rules-only mode: AI_PROVIDER=disabled. The application still works and the regulatory checks remain auditable.",
         "For a no-key local model, install Ollama and run a model on the reviewer machine. Local Ollama at http://localhost:11434 does not require authentication.",
-        "For a hosted provider, set PRAMAAN_AI_BASE_URL, PRAMAAN_AI_MODEL and PRAMAAN_AI_API_KEY as server-side environment variables. The status endpoint reports only whether a key is present, never its value.",
+        "For an online provider, OpenRouter is supported through AI_PROVIDER=openrouter, OPENROUTER_API_KEY and OPENROUTER_MODEL=openrouter/free. A generic OpenAI-compatible endpoint is supported through PRAMAAN_AI_BASE_URL, PRAMAAN_AI_MODEL and PRAMAAN_AI_API_KEY. The status endpoint reports only whether a key is present, never its value.",
         "The optional provider can suggest claims, but suggestions are marked advisory_only and are not used to auto-approve, auto-reject or bypass hard gates.",
     ]),
     ("6 · Local Ollama setup (no API key)", [
@@ -52,8 +52,7 @@ SECTIONS = [
         "If Ollama is stopped or slow, the request falls back to deterministic rules. A model outage never changes a compliance result.",
     ]),
     ("7 · Hosted AI and official integrations", [
-        "Recommended hosted choices: Groq’s free developer access for fast open-weight models; OpenRouter’s openrouter/free router for zero-cost, rate-limited model routing; or Cerebras’ time-limited trial credits. Availability and quotas change, so verify the provider’s current terms.",
-        "Create credentials only in the provider’s official console. Store them in Vercel Environment Variables or a secret manager; use separate Development, Preview and Production values.",
+        "Create credentials only in the provider’s official console. Store them in Vercel Environment Variables or a secret manager; use separate Development, Preview and Production values. OpenRouter free models are rate-limited and still require your own key.",
         "DigiLocker/API Setu is not an open anonymous API. It requires partner registration, consent and issued credentials such as client ID, client secret or product instance ID depending on the integration path.",
         "Use official sandbox credentials and signed receipts. A copied document uploaded to DigiLocker must not be treated as issuer-authenticated merely because it is hosted there.",
         "For PaddleOCR, local deployment is open source. Hosted PaddleOCR services require their own access token. Add that integration only behind a server-side adapter and preserve confidence/routing metadata.",
@@ -73,7 +72,9 @@ SECTIONS = [
     ]),
     ("10 · API and reference links", [
         "Core API: POST /api/login; GET /api/me; GET /api/ai/status; GET /api/applications; POST /api/applications; POST /api/applications/{id}/decide; POST /api/audit/verify.",
+        "OpenRouter API: https://openrouter.ai/docs/api_reference/authentication and https://openrouter.ai/openrouter/free.",
         "Official Ollama API: https://docs.ollama.com/api/generate and https://docs.ollama.com/api/authentication.",
+        "Google Gemini keys: https://ai.google.dev/gemini-api/docs/api-key. Create and restrict a key in your own Google project.",
         "PaddleOCR: https://paddlepaddle.github.io/PaddleOCR/main/en/index.html.",
         "DigiLocker/API Setu: https://apisetu.gov.in/digilocker and https://docs.setu.co/data/digilocker/quickstart.",
         "Repository: https://github.com/yoursexybhavya/pramaan-ai-sih26261. Production demo: https://pramaan-ai-sih26261.vercel.app.",

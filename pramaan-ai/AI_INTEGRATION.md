@@ -7,10 +7,8 @@ are:
 |---|---|---|---|
 | Rules-only | `AI_PROVIDER=disabled` | None | Default and always available |
 | Local Ollama | `AI_PROVIDER=ollama` | None for local server | Advisory claim suggestions |
-| Groq hosted | `AI_PROVIDER=groq`, `GROQ_API_KEY` | User-owned Groq key | Advisory claim suggestions |
-| OpenRouter free router | `AI_PROVIDER=openrouter`, `OPENROUTER_API_KEY` | User-owned OpenRouter key | Advisory claim suggestions |
-| Cerebras hosted | `AI_PROVIDER=cerebras`, `CEREBRAS_API_KEY` | User-owned Cerebras key | Advisory claim suggestions |
-| Any OpenAI-compatible endpoint | `AI_PROVIDER=openai_compatible` plus `PRAMAAN_AI_BASE_URL`, `PRAMAAN_AI_MODEL`, `PRAMAAN_AI_API_KEY` | User-owned server secret | Advisory claim suggestions |
+| Hosted compatible endpoint | `AI_PROVIDER=openai_compatible` plus `PRAMAAN_AI_BASE_URL`, `PRAMAAN_AI_MODEL`, `PRAMAAN_AI_API_KEY` | User-owned server secret | Advisory claim suggestions |
+| OpenRouter online models | `AI_PROVIDER=openrouter`, `OPENROUTER_API_KEY`, optional `OPENROUTER_MODEL` | User-owned OpenRouter key | Free-model routing or selected hosted model |
 
 Check the current mode after login at `GET /api/ai/status`. The API never
 returns secret values. Model suggestions are marked advisory and do not alter
@@ -26,25 +24,20 @@ export OLLAMA_MODEL=gemma3:4b
 cd pramaan-app && ./run.sh
 ```
 
-## Online provider setup
+For official issuer integrations, use DigiLocker/API Setu partner onboarding
+and sandbox credentials. Do not use anonymous keys found online.
 
-Choose one provider and add its key only to the server environment:
+## Online OpenRouter example
+
+Create your own key at <https://openrouter.ai/settings/keys>, set a spending
+limit, then configure it only on the server:
 
 ```bash
-# Groq: free developer access, fast open-weight models
-export AI_PROVIDER=groq
-export GROQ_API_KEY='your-key-from-console.groq.com'
-
-# Or OpenRouter: use the free-model router; keep the key budget-limited
 export AI_PROVIDER=openrouter
-export OPENROUTER_API_KEY='your-key-from-openrouter.ai'
-
-# Or Cerebras: trial credits may be available for a new account
-export AI_PROVIDER=cerebras
-export CEREBRAS_API_KEY='your-key-from-cloud.cerebras.ai'
+export OPENROUTER_API_KEY='your-own-key'
+export OPENROUTER_MODEL='openrouter/free'
 ```
 
-The names and free quotas are provider-controlled and can change. Do not
-paste keys into the browser, GitHub, screenshots or this repository. For
-official issuer integrations, use DigiLocker/API Setu partner onboarding and
-sandbox credentials; those are separate from an LLM key.
+The key must never be placed in `index.html`, committed to GitHub, or sent to
+the browser. OpenRouter’s free models still have rate limits and availability
+can vary, so the deterministic rules fallback remains enabled.

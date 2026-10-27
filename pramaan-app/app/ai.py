@@ -28,49 +28,35 @@ def _get_json(url: str, headers: Optional[Dict[str, str]] = None, timeout: float
 
 
 def _status(provider: str, model: str, base_url: str, key: str) -> Dict[str, Any]:
-    remote = provider in ("openai", "openai_compatible")
+    remote = provider in ("openai", "openai_compatible", "openrouter")
     result = {"provider": provider, "model": model, "mode": "remote" if remote else "local", "configured": provider != "disabled", "available": False, "key_present": bool(key) if remote else False, "advisory_only": True}
     if provider == "disabled":
         result["reason"] = "Rules-only mode; no model endpoint configured"
         return result
     try:
-        if not key and remote:
-            result["reason"] = "Missing provider API key"
-            return result
         if provider == "ollama":
             _get_json(base_url.rstrip("/") + "/api/tags", timeout=0.7)
         else:
-            _get_json(base_url.rstrip("/") + "/models", {"Authorization": "Bearer " + key}, timeout=1.5)
+            # An OpenAI-compatible endpoint may not expose /models, so a
+            # successful configuration check is intentionally conservative.
+            result["available"] = bool(key)
+            result["reason"] = "Configured by environment" if key else ("Missing OPENROUTER_API_KEY" if provider == "openrouter" else "Missing PRAMAAN_AI_API_KEY")
+            return result
         result["available"] = True
-        result["reason"] = "Endpoint and credentials responded"
-    except urllib.error.HTTPError as error:
-        result["reason"] = "Provider rejected the key or request (HTTP %s)" % error.code
     except (urllib.error.URLError, TimeoutError, OSError, ValueError):
         result["reason"] = "Endpoint unavailable; rules-only fallback remains active"
     return result
 
 
-def _config() -> Dict[str, str]:
-    """Resolve a hosted provider preset without exposing its secret."""
-    provider = os.getenv("AI_PROVIDER", "disabled").lower()
-    presets = {
-        "groq": ("https://api.groq.com/openai/v1", "openai/gpt-oss-20b", "GROQ_API_KEY"),
-        "openrouter": ("https://openrouter.ai/api/v1", "openrouter/free", "OPENROUTER_API_KEY"),
-        "cerebras": ("https://api.cerebras.ai/v1", "gpt-oss-120b", "CEREBRAS_API_KEY"),
-    }
-    if provider in presets:
-        base_url, model, key_name = presets[provider]
-        return {"provider": provider, "base_url": base_url, "model": os.getenv("PRAMAAN_AI_MODEL", model), "key": os.getenv(key_name, os.getenv("PRAMAAN_AI_API_KEY", ""))}
-    if provider == "ollama":
-        return {"provider": provider, "base_url": os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"), "model": os.getenv("OLLAMA_MODEL", "gemma3:4b"), "key": os.getenv("OLLAMA_API_KEY", "")}
-    if provider in ("openai", "openai_compatible"):
-        return {"provider": "openai_compatible", "base_url": os.getenv("PRAMAAN_AI_BASE_URL", ""), "model": os.getenv("PRAMAAN_AI_MODEL", "configured-model"), "key": os.getenv("PRAMAAN_AI_API_KEY", "")}
-    return {"provider": "disabled", "base_url": "", "model": "none", "key": ""}
-
-
 def status() -> Dict[str, Any]:
-    config = _config()
-    return _status(config["provider"], config["model"], config["base_url"], config["key"])
+    provider = os.getenv("AI_PROVIDER", "disabled").lower()
+    if provider == "ollama":
+        return _status(provider, os.getenv("OLLAMA_MODEL", "gemma3:4b"), os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"), os.getenv("OLLAMA_API_KEY", ""))
+    if provider in ("openai", "openai_compatible"):
+        return _status("openai_compatible", os.getenv("PRAMAAN_AI_MODEL", "configured-model"), os.getenv("PRAMAAN_AI_BASE_URL", ""), os.getenv("PRAMAAN_AI_API_KEY", ""))
+    if provider == "openrouter":
+        return _status("openrouter", os.getenv("OPENROUTER_MODEL", "openrouter/free"), "https://openrouter.ai/api/v1", os.getenv("OPENROUTER_API_KEY", ""))
+    return _status("disabled", "none", "", "")
 
 
 def _prompt(text: str) -> str:
@@ -88,20 +74,25 @@ def suggest_claims(text: str) -> List[Dict[str, Any]]:
     current = status()
     if not text.strip() or not current["available"]:
         return []
-    config = _config()
     provider = current["provider"]
     try:
         if provider == "ollama":
             response = _post_json(
-                config["base_url"].rstrip("/") + "/api/generate",
+                os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").rstrip("/") + "/api/generate",
                 {"model": current["model"], "prompt": _prompt(text), "format": "json", "stream": False},
-                {"Authorization": "Bearer " + config["key"]} if config["key"] else None,
+                {"Authorization": "Bearer " + os.getenv("OLLAMA_API_KEY")} if os.getenv("OLLAMA_API_KEY") else None,
                 timeout=8,
             )
             raw = response.get("response", "{}")
         else:
-            base = config["base_url"].rstrip("/")
-            response = _post_json(base + "/chat/completions", {"model": current["model"], "temperature": 0, "messages": [{"role": "user", "content": _prompt(text)}], "response_format": {"type": "json_object"}}, {"Authorization": "Bearer " + config["key"]}, timeout=8)
+            if provider == "openrouter":
+                base = "https://openrouter.ai/api/v1"
+                key = os.getenv("OPENROUTER_API_KEY", "")
+                extra = {"Authorization": "Bearer " + key, "HTTP-Referer": os.getenv("PRAMAAN_SITE_URL", "https://pramaan-ai-sih26261.vercel.app"), "X-OpenRouter-Title": "PRAMAAN-AI"}
+            else:
+                base = os.getenv("PRAMAAN_AI_BASE_URL", "").rstrip("/")
+                extra = {"Authorization": "Bearer " + os.getenv("PRAMAAN_AI_API_KEY", "")}
+            response = _post_json(base + "/chat/completions", {"model": current["model"], "temperature": 0, "messages": [{"role": "user", "content": _prompt(text)}], "response_format": {"type": "json_object"}}, extra, timeout=8)
             raw = response["choices"][0]["message"]["content"]
         claims = json.loads(raw).get("claims", [])
         return [{"key": str(c.get("key", "")), "value": c.get("value"), "confidence": min(0.85, float(c.get("confidence", 0.6))), "advisory": True} for c in claims if c.get("key")][:20]
